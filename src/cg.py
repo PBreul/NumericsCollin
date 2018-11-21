@@ -1,6 +1,7 @@
-from numpy import *
+import numpy as np
 
-def solve_cg(A,b,x0,rtol,maxits):
+
+def solve_cg(A, b, x, rtol, maxits):
     """
     Function to use the conjugate gradient algorithm to
     solve the equation Ax = b for symmetric positive definite A.
@@ -18,5 +19,18 @@ def solve_cg(A,b,x0,rtol,maxits):
     rvals -- a numpy array containing the l2 norms of the residuals
     r=Ax-b at each iteration
     """
-
+    rvals = rtol + 1
+    first_iteration = True
+    r = b
+    while rvals > rtol:
+        if first_iteration:
+            p = r.copy()
+            first_iteration = False
+        else:
+            p = r + np.dot(r, r) / np.dot(r_old, r_old) * p
+        alpha = np.dot(r, r) / np.dot(p, np.dot(A, p))
+        x = x + alpha * p
+        r_old = r.copy()
+        r = r - alpha * np.dot(A, p)
+        rvals = np.sqrt(np.dot(r, r))
     return x, rvals
